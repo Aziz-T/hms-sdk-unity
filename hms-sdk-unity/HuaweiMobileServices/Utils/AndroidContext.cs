@@ -1,8 +1,10 @@
-﻿namespace HuaweiMobileServices.Utils
+﻿using UnityEngine;
+
+namespace HuaweiMobileServices.Utils
 {
     using UnityEngine;
 
-    internal static class AndroidContext
+    public static class AndroidContext
     {
 
         private static AndroidJavaClass mUnityPlayerClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
@@ -25,6 +27,8 @@
         public static void StartActivity(AndroidIntent intent) => ActivityContext.Call("startActivity", intent.Intent);
 
         public static void StartActivityForResult(AndroidIntent intent, int requestCode) => ActivityContext.Call("startActivityForResult", intent.Intent, requestCode);
+
+
 
     }
 

@@ -7,4 +7,5 @@ public interface BridgeType {
 	int IN_APP_COMMENT = 1001;
     int SCAN = 1002;
     int FILE_PICKER = 1003;
+    int CAMERA = 1004;
 }

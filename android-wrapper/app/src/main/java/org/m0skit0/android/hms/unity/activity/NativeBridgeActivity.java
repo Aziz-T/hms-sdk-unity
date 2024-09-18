@@ -10,14 +10,13 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 
-import androidx.annotation.Nullable;
-
 import com.unity3d.player.UnityPlayer;
 
 import org.m0skit0.android.hms.unity.BridgeType;
 import org.m0skit0.android.hms.unity.GenericBridge;
 import org.m0skit0.android.hms.unity.base.StatusBridge;
 import org.m0skit0.android.hms.unity.game.ArchiveBridge;
+import org.m0skit0.android.hms.unity.helper.CameraHelper.CameraBridge;
 import org.m0skit0.android.hms.unity.helper.FilePicker.FilePickerBridge;
 import org.m0skit0.android.hms.unity.inAppComment.InAppCommentBridge;
 import org.m0skit0.android.hms.unity.scan.bridge.ScanKitBridge;
@@ -37,7 +36,7 @@ public class NativeBridgeActivity extends Activity {
     }
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "[HMS] onCreate");
         final Intent intent = getIntent();
@@ -70,6 +69,9 @@ public class NativeBridgeActivity extends Activity {
                     case FilePickerBridge.FILE_PICKER:
                         Log.d(TAG, "[HMS] onCreate type FILE_PICKER");
                         FilePickerBridge.RequestForPermission(this);
+                    case CameraBridge.CAMERA:
+                        Log.d(TAG, "[HMS] onCreate type FILE_PICKER");
+                        CameraBridge.RequestForPermission(this);
                     default:
                         Log.e(TAG, "[HMS] Unknown type " + type);
                 }
@@ -117,6 +119,22 @@ public class NativeBridgeActivity extends Activity {
                         }
                     }
                     FilePickerBridge.returnShow(data,bitmap);
+                case BridgeType.CAMERA:
+                    Uri myUri = data.getData();
+                    if(myUri == null){
+                        Log.e(TAG, "[HMS] Data is Empty. Intent data not found. " + requestCode);
+                        return;
+                    }
+                    Bitmap myBitmap = null;
+                    Uri imageUri = data.getData();
+                    try {
+                        myBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    CameraBridge.returnShow(data, myBitmap);
+                    break;
                 default:
                     Log.e(TAG, "[HMS] Unknown request code " + requestCode);
             }
